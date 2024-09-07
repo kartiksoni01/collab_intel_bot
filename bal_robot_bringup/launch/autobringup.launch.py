@@ -63,12 +63,6 @@ def generate_launch_description():
             condition=IfCondition(PythonExpression(['not ', use_sim_time])),
             launch_arguments={'use_sim_time':use_sim_time}.items())
   
-  differential_drive_node = Node(
-        package='bal_robot_firmware',
-        condition=IfCondition(PythonExpression(['not ', use_sim_time])),
-        executable='differential.py',
-        name ='differential_drive_publisher',
-    )
   robot_state_publisher_node = launch_ros.actions.Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -92,24 +86,7 @@ def generate_launch_description():
                                           description='Absolute path to robot urdf file'),
     launch.actions.DeclareLaunchArgument(name='map',default_value=map_directory,
                                           description='Map to be used'),
- Node(
-        package='nav2_map_server',
-        condition=IfCondition(PythonExpression(['not ', exploration])),
-        executable='map_server',
-        name='map_server',
-        output='screen',
-        parameters=[{'use_sim_time': use_sim_time},
-                    {'yaml_filename': map_file}
-                    ]),
-    Node(
-        package='nav2_lifecycle_manager',
-        condition=IfCondition(PythonExpression(['not ', exploration])),
-        executable='lifecycle_manager',
-        name='lifecycle_manager_mapper',
-        output='screen',
-        parameters=[{'use_sim_time': use_sim_time},
-                    {'autostart': True},
-                    {'node_names': ['map_server']}]),
+
 
     rviz_launch_cmd,
     state_publisher_launch_cmd,
